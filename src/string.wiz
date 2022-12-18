@@ -1,0 +1,106 @@
+use std::string::String
+
+fun bin(_ i: UInt64): String {
+    return _formatInternal(i, 2)
+}
+
+fun oct(_ i: UInt64): String {
+    return _formatInternal(i, 8)
+}
+
+fun hex(_ i: UInt64): String {
+    return _formatInternal(i, 16)
+}
+
+fun hexInternal(_ i: UInt64): String {
+    var result = String::empty()
+    val n = if 9 < i { 87 as UInt64 } else { 48 as UInt64 }
+    result.buffer.push((i + n) as UInt8)
+    return result
+}
+
+fun _formatInternal(_ i: UInt64, _ base: UInt64): String {
+    if i == 0 {
+        return String::new("0")
+    }
+    var i = i
+    var result = String::empty()
+    while i > 0 {
+        val sInt = hexInternal(i % base)
+        sInt.join(result)
+        result = sInt
+        i /= base
+    }
+    return result
+}
+
+
+#[test]
+fun test_hexInternal() {
+    val d1 = hexInternal(1 as UInt64)
+    val d10 = hexInternal(10 as UInt64)
+    val d11 = hexInternal(11 as UInt64)
+
+    val s1 = String::new("1")
+    val s10 = String::new("a")
+    val s11 = String::new("b")
+
+    assert(s1.equals(d1))
+    assert(s10.equals(d10))
+    assert(s11.equals(d11))
+}
+
+#[test]
+fun test_bin() {
+    val b0 = bin(0)
+    val b1 = bin(1)
+    val b2 = bin(2)
+    val b3 = bin(3)
+
+    val s0 = String::new("0")
+    val s1 = String::new("1")
+    val s2 = String::new("10")
+    val s3 = String::new("11")
+
+    assert(s0.equals(b0))
+    assert(s1.equals(b1))
+    assert(s2.equals(b2))
+    assert(s3.equals(b3))
+}
+
+#[test]
+fun test_oct() {
+    val o0 = oct(0)
+    val o1 = oct(1)
+    val o8 = oct(8)
+    val o9 = oct(9)
+
+    val s0 = String::new("0")
+    val s1 = String::new("1")
+    val s8 = String::new("10")
+    val s9 = String::new("11")
+
+    assert(s0.equals(o0))
+    assert(s1.equals(o1))
+    assert(s8.equals(o8))
+    assert(s9.equals(o9))
+}
+
+#[test]
+fun test_hex() {
+    val h0 = hex(0)
+    val h1 = hex(1)
+    val h18 = hex(18)
+    val h11 = hex(11)
+
+    val s0 = String::new("0")
+    val s1 = String::new("1")
+    val s18 = String::new("12")
+    val s11 = String::new("b")
+
+    assert(s0.equals(h0))
+    assert(s1.equals(h1))
+    assert(s18.equals(h18))
+    assert(s11.equals(h11))
+
+}
